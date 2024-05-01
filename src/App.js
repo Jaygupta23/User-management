@@ -48,6 +48,7 @@ function App() {
             {/* <Route path="/home" element={""} /> */}
             {role === "Admin" && (
               <>
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/create-user" element={<CreateUser />} />
                 <Route path="/all-user" element={<AllUser />} />
                 <Route path="/imageuploader" element={<ImageUploader />} />
@@ -73,6 +74,8 @@ function App() {
               permissions.csvCompare && (
                 <>
                   <Route path="/comparecsv" element={<CsvHomepage />} />
+                  <Route path="/profile" element={<Profile />} />
+
                   <Route
                     path="/comparecsv/correct_compare_csv"
                     element={<Correction />}
