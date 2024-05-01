@@ -43,21 +43,21 @@ const DataMatching = () => {
           }
           return task;
         });
-        console.log(tasks);
         setAllTasks(updatedTasks);
       } catch (error) {
         console.log(error);
       }
     };
     fetchCurrentUser();
-  }, []);
+  }, [popUp]);
 
   useEffect(() => {
     const fetchTemplate = async () => {
+      console.log(currentTaskData);
       try {
         const response = await onGetTemplateHandler();
         const templateData = response.find(
-          (data) => data.id === parseInt(currentTaskData.templeteId)
+          (data) => data.id === +currentTaskData.templeteId
         );
         setTemplateHeaders(templateData);
       } catch (error) {
@@ -67,7 +67,8 @@ const DataMatching = () => {
     fetchTemplate();
   }, [currentTaskData]);
 
-  const onImageHandler = async (direction, csvData) => {
+  const onImageHandler = async (direction, csvData, taskData) => {
+    console.log(taskData);
     const headers = csvData[0];
     const getKeyByValue = (object, value) => {
       return Object.keys(object).find((key) => object[key] === value);
@@ -77,16 +78,15 @@ const DataMatching = () => {
     setImageName(keyForImage);
     try {
       let imageName1;
-      let newIndex = currentIndex;
+      let newIndex = Number(taskData.currentIndex) - Number(taskData.min) + 1;
 
       if (direction === "initial") {
         const objects = csvData[newIndex];
         imageName1 = objects[keyForImage];
         setCsvCurrentData(objects);
-        newIndex = newIndex + 1;
+        // newIndex = newIndex + 1;
       } else {
         newIndex = direction === "next" ? newIndex + 1 : newIndex - 1;
-        console.log(newIndex);
         if (newIndex > 0 && newIndex < csvData.length) {
           setCurrentIndex(newIndex);
           const objects = csvData[newIndex];
@@ -101,9 +101,16 @@ const DataMatching = () => {
           return;
         }
       }
+
+      // console.log(newIndex + Number(currentData.min));
+      console.log(currentTaskData);
       const response = await axios.post(
         `http://${REACT_APP_IP}:4000/get/image`,
-        { imageName: imageName1 },
+        {
+          imageName: imageName1,
+          currentIndex: newIndex + Number(taskData.min) - 1,
+          id: taskData.id,
+        },
         {
           headers: {
             token: token,
@@ -111,6 +118,20 @@ const DataMatching = () => {
         }
       );
       const url = response.data?.base64Image;
+      setCurrentTaskData((prevData) => {
+        if (direction === "next") {
+          return {
+            ...prevData,
+            currentIndex: Number(+prevData.currentIndex + 1),
+          };
+        } else if (direction === "prev") {
+          return {
+            ...prevData,
+            currentIndex: Number(+prevData.currentIndex - 1),
+          };
+        }
+      });
+
       setImage(url);
       setImageNotFound(true);
       setPopUp(false);
@@ -124,8 +145,6 @@ const DataMatching = () => {
     // const updatedData = [...csvData];
     // updatedData[currentIndex] = csvCurrentData;
     // setCsvData(updatedData);
-    // console.log(csvCurrentData);
-    // console.log(currentIndex);
     try {
       await axios.post(
         `http://${REACT_APP_IP}:4000/updatecsvdata/${parseInt(
@@ -141,6 +160,7 @@ const DataMatching = () => {
           },
         }
       );
+      console.log(currentIndex + Number(currentTaskData.min));
       setCsvData((prevCsvData) => {
         const newCsvData = [...prevCsvData];
         newCsvData[currentIndex] = csvCurrentData;
@@ -230,12 +250,27 @@ const DataMatching = () => {
         }
       );
       setCsvData(response.data);
-
-      onImageHandler("initial", response.data);
+      onImageHandler("initial", response.data, taskData);
       setPopUp(false);
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  const taskUpdationHandler = async () => {
+    try {
+      await axios.post(
+        `http://${REACT_APP_IP}:4000/taskupdation/${currentTaskData.id}`,
+        {},
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+      toast.success("Task completed successfully.");
+      setPopUp(true);
+    } catch (error) {}
   };
 
   return (
@@ -269,6 +304,9 @@ const DataMatching = () => {
                               Max
                             </div>
                             <div className="px-16 py-3.5 text-left text-xl font-semibold text-gray-700">
+                              Status
+                            </div>
+                            <div className="px-16 py-3.5 text-left text-xl font-semibold text-gray-700">
                               Start Task
                             </div>
                           </div>
@@ -299,6 +337,59 @@ const DataMatching = () => {
                                 <div className="flex">
                                   <div className="w-full font-semibold">
                                     <div className=" px-2">{taskData.max}</div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="whitespace-nowrap flex justify-center itemCe px-2 py-2 ">
+                                <div className="flex">
+                                  <div className="w-full font-semibold">
+                                    <div className=" px-2">
+                                      <span
+                                        className={`inline-flex items-center justify-center rounded-full ${
+                                          !taskData.taskStatus
+                                            ? "bg-amber-100 text-amber-700"
+                                            : "bg-emerald-100 text-emerald-700"
+                                        } px-2.5 py-0.5 `}
+                                      >
+                                        {!taskData.taskStatus ? (
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            className="-ms-1 me-1.5 h-4 w-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                                            />
+                                          </svg>
+                                        ) : (
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            className="-ms-1 me-1.5 h-4 w-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                          </svg>
+                                        )}
+
+                                        <p className="whitespace-nowrap text-sm">
+                                          {taskData.taskStatus
+                                            ? "Completed"
+                                            : "Pending"}
+                                        </p>
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -461,7 +552,7 @@ const DataMatching = () => {
                     alt="Selected"
                     ref={imageRef}
                     style={{
-                      width: "48rem",
+                      width: "50rem",
                       height: "50rem",
                     }}
                     draggable={false}
@@ -487,22 +578,32 @@ const DataMatching = () => {
                 <div className="flex float-right gap-4 py-6 lg:py-24 px-16 lg:px-24">
                   <button
                     onClick={onCsvUpdateHandler}
-                    className="block w-full rounded  px-4 py-2 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-xl sm:w-auto"
+                    className="block w-full rounded  px-3 py-2 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-md sm:w-auto"
                   >
                     Update
                   </button>
 
                   <button
-                    onClick={() => onImageHandler("prev", csvData)}
-                    className="block w-full rounded  px-4 py-3 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-xl sm:w-auto"
+                    onClick={() =>
+                      onImageHandler("prev", csvData, currentTaskData)
+                    }
+                    className="block w-full rounded  px-4 py-3 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-md sm:w-auto"
                   >
                     Prev
                   </button>
                   <button
-                    onClick={() => onImageHandler("next", csvData)}
-                    className="block w-full rounded  px-4 py-3 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-xl sm:w-auto"
+                    onClick={() =>
+                      onImageHandler("next", csvData, currentTaskData)
+                    }
+                    className="block w-full rounded  px-4 py-3 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-md sm:w-auto"
                   >
                     Next
+                  </button>
+                  <button
+                    onClick={taskUpdationHandler}
+                    className="block w-full rounded  px-4 py-3 border-[green]  border-2 hover:bg-green-700 hover:text-white  font-bold text-md sm:w-auto"
+                  >
+                    Task Completed
                   </button>
                 </div>
               </div>
