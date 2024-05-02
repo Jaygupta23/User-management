@@ -62,46 +62,114 @@ const Correction = () => {
       e.returnValue = confirmationMessage;
       return confirmationMessage;
     };
-  
+
     // Add event listener when the component mounts
     window.addEventListener("beforeunload", confirmExit);
-  
+
     // Remove event listener when the component unmounts
     return () => {
       window.removeEventListener("beforeunload", confirmExit);
     };
   }, []); // Empty dependency array to run effect only once on mount
-  
+
   useEffect(() => {
     console.log("called");
     // window.confirm("Hello")
 
     const handlePopstate = (e) => {
-      console.log("treig")
+      console.log("treig");
       // Display a confirmation message
-      window.confirm()
+      window.confirm();
       const confirmationMessage = "Are you sure you want to leave this page?";
       if (!window.confirm(confirmationMessage)) {
         // Prevent navigation if the user cancels
         window.history.pushState(null, "", window.location.href);
       }
     };
-  
+
     // Add event listener when the component mounts
     window.addEventListener("popstate", handlePopstate);
-  
+
     // Remove event listener when the component unmounts
     return () => {
       window.removeEventListener("popstate", handlePopstate);
     };
   }, [location]); // Empty dependency array to run effect only once on mount
-   // Empty dependency array to run effect only once on mount
-  
+  // Empty dependency array to run effect only once on mount
+
   useEffect(() => {
     document.body.style.userSelect = "none";
     return () => {
       // Cleanup function to reset the style when the component unmounts
       document.body.style.userSelect = "auto";
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dataCtx.imageMappedData.length === 0) {
+      navigate("/comparecsv", { replace: true });
+    }
+  }, []);
+
+  useEffect(() => {
+    const confirmExit = (e) => {
+      // Display a confirmation message
+      const confirmationMessage =
+        "Are you sure you want to leave this page? Please download corrected CSV before closing this page.";
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    };
+
+    // Add event listener when the component mounts
+    window.addEventListener("beforeunload", confirmExit);
+
+    // Remove event listener when the component unmounts
+    return () => {
+      window.removeEventListener("beforeunload", confirmExit);
+    };
+  }, []); // Empty dependency array to run effect only once on mount
+
+  useEffect(() => {
+    const handlePopstate = (e) => {
+      // Display a confirmation message
+      window.confirm();
+      const confirmationMessage = "Are you sure you want to leave this page?";
+      if (!window.confirm(confirmationMessage)) {
+        // Prevent navigation if the user cancels
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    // Add event listener when the component mounts
+    window.addEventListener("popstate", handlePopstate);
+
+    // Remove event listener when the component unmounts
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, [location]); // Empty dependency array to run effect only once on mount
+  // Empty dependency array to run effect only once on mount
+
+  useEffect(() => {
+    document.body.style.userSelect = "none";
+    return () => {
+      // Cleanup function to reset the style when the component unmounts
+      document.body.style.userSelect = "auto";
+    };
+  }, []);
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowRight") {
+        nextHandler();
+      } else if (event.key === "ArrowLeft") {
+        prevHandler();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
