@@ -422,7 +422,7 @@ const DataMatching = () => {
       {!popUp && (
         <div className=" flex flex-col lg:flex-row md:flex-col-reverse">
           {/* LEFT SECTION */}
-          <div className=" border-e lg:w-3/12 order-lg-1 second">
+          <div className=" border-e lg:w-3/12 xl:w-2/12 order-lg-1 second">
             <div className=" flex flex-col overflow-hidden w-[100%]">
               <article className="p-3 shadow transition pt-28 hover:shadow-lg overflow-auto h-[100vh] bg-gradient-to-r from-[rgb(255,195,36)] to-orange-500">
                 {csvCurrentData &&
@@ -436,13 +436,14 @@ const DataMatching = () => {
                       return (
                         <div
                           key={i}
-                          className="w-5/6 lg:w-full px-3 py-1 flex justify-between items-center overflow-x font-bold"
+                          className="w-5/6 px-3 py-1  overflow-x font-bold"
                         >
-                          <label className="flex w-full gap-2 justify-between items-center overflow-hidden  rounded-md border-2 font-semibold  border-white px-3  py-2 shadow-sm focus-within:ring-1 ">
-                            <span className="text-md text-gray-700 font-bold">
+                          <label className=" w-full overflow-hidden  rounded-md  font-semibold  py-2 shadow-sm  ">
+                            <span className="text-sm text-gray-700 font-bold">
                               {key?.toUpperCase()}
                             </span>
 
+                            </label>
                             <input
                               type="email"
                               className="mt-1 border-none p-2 focus:border-transparent text-center rounded focus:outline-none focus:ring-0 sm:text-sm"
@@ -453,7 +454,6 @@ const DataMatching = () => {
                               }
                               onFocus={() => imageFocusHandler(key)}
                             />
-                          </label>
                         </div>
                       );
                     }
@@ -525,7 +525,7 @@ const DataMatching = () => {
             {/* View image */}
           </div>
           {/* RIGHT SECTION */}
-          <div className="w-full lg:w-9/12 order-1 pt-32 order-lg-2 bg-gradient-to-r from-[rgb(255,195,36)] to-orange-300 matchingMain">
+          <div className="w-full lg:w-9/12 xl:w-10/12 order-1 pt-32 order-lg-2 bg-gradient-to-r from-[rgb(255,195,36)] to-orange-300 matchingMain">
             {!imageUrl ? (
               <div className="flex justify-center items-center ">
                 <div className="mt-64">
