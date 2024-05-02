@@ -216,16 +216,21 @@ const GenerateResultCsv = (props) => {
           </span>
         </button>
       </div>
-      {/* <div className="text-center mt-4 ">
+      <div
+        className="text-center mt-4 "
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
         <a
           className="animate__animated animate__bounceInLeft animate__delay-5s group inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75 mx-4 shadow-md shadow-blue-300"
           href="#"
         >
           <span className="block rounded-full bg-white px-8 py-3 text-sm font-bold group-hover:bg-transparent hover:text-white text-black">
-            cancel
+            Cancel
           </span>
         </a>
-      </div> */}
+      </div>
     </div>
   );
 };
