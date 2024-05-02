@@ -10,7 +10,7 @@ import {
 import Button from "@mui/material/Button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import { REACT_APP_IP } from "../../services/common";
 
 const DataMatching = () => {
@@ -420,11 +420,11 @@ const DataMatching = () => {
         </div>
       )}
       {!popUp && (
-        <div className=" flex flex-col lg:flex-row md:flex-col-reverse">
+        <div className=" flex flex-col lg:flex-row md:flex-col-reverse  bg-gradient-to-r from-[rgb(255,195,36)] to-orange-500">
           {/* LEFT SECTION */}
           <div className=" border-e lg:w-3/12 xl:w-2/12 order-lg-1 second">
             <div className=" flex flex-col overflow-hidden w-[100%]">
-              <article className="p-3 shadow transition pt-28 hover:shadow-lg overflow-auto h-[100vh] bg-gradient-to-r from-[rgb(255,195,36)] to-orange-500">
+              <article className="p-3 shadow transition pt-28 hover:shadow-lg overflow-auto h-[100vh]">
                 {csvCurrentData &&
                   Object.entries({ ...csvData[0] }).map(([key, value], i) => {
                     const templateData = templateHeaders?.templetedata.find(
@@ -442,93 +442,31 @@ const DataMatching = () => {
                             <span className="text-sm text-gray-700 font-bold">
                               {key?.toUpperCase()}
                             </span>
-
-                            </label>
-                            <input
-                              type="email"
-                              className="mt-1 border-none p-2 focus:border-transparent text-center rounded focus:outline-none focus:ring-0 sm:text-sm"
-                              placeholder={value}
-                              value={csvCurrentData[key]}
-                              onChange={(e) =>
-                                changeCurrentCsvDataHandler(key, e.target.value)
-                              }
-                              onFocus={() => imageFocusHandler(key)}
-                            />
+                          </label>
+                          <input
+                            type="text"
+                            className="mt-1 border-none p-2 focus:border-transparent text-center rounded focus:outline-none focus:ring-0 sm:text-sm w-48"
+                            placeholder={value}
+                            value={csvCurrentData[key]}
+                            onChange={(e) =>
+                              changeCurrentCsvDataHandler(key, e.target.value)
+                            }
+                            onFocus={() => imageFocusHandler(key)}
+                          />
                         </div>
                       );
                     }
                   })}
-                <div className="w-full py-2">
-                  <div className=" mb-1">
-                    <div className="flex">
-                      <label
-                        className="text-xl mx-3 font-semibold py-2 mt-1 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        htmlFor="questions"
-                      >
-                        Questions:
-                      </label>
-                    </div>
-                  </div>
-                  <div className="flex">
-                    <div className="flex flex-wrap justify-evenly">
-                      {csvCurrentData &&
-                        Object.entries(csvCurrentData).map(
-                          ([key, value], i) => {
-                            const csvHeader = csvData[0][key];
-                            const templateData =
-                              templateHeaders?.templetedata.find(
-                                (data) => data.attribute === csvHeader
-                              );
-                            if (
-                              templateData &&
-                              templateData.fieldType === "questionsField" &&
-                              key !== imageColName
-                            ) {
-                              return (
-                                <div
-                                  key={i}
-                                  className="gap-1 m-2 flex items-center"
-                                >
-                                  <label
-                                    htmlFor={`Quantity${i}`}
-                                    className="font-bold text-sm text-bold"
-                                  >
-                                    {key}
-                                  </label>
-                                  <div className="flex items-center rounded border border-gray-200">
-                                    <input
-                                      type="text"
-                                      id={`Quantity${i}`}
-                                      className="h-10 w-10 border-transparent text-center rounded text-sm"
-                                      placeholder={value}
-                                      value={csvCurrentData[key]}
-                                      onChange={(e) =>
-                                        changeCurrentCsvDataHandler(
-                                          key,
-                                          e.target.value
-                                        )
-                                      }
-                                      onFocus={() => imageFocusHandler(key)}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            }
-                          }
-                        )}
-                    </div>
-                  </div>
-                </div>
               </article>
             </div>
 
             {/* View image */}
           </div>
           {/* RIGHT SECTION */}
-          <div className="w-full lg:w-9/12 xl:w-10/12 order-1 pt-32 order-lg-2 bg-gradient-to-r from-[rgb(255,195,36)] to-orange-300 matchingMain">
+          <div className="w-full lg:w-9/12 xl:w-10/12 order-1 pt-20 order-lg-2 bg-gradient-to-r from-[rgb(255,195,36)] to-orange-300 matchingMain">
             {!imageUrl ? (
               <div className="flex justify-center items-center ">
-                <div className="mt-64">
+                <div className="mt-10">
                   <ImageNotFound />
 
                   <h1 className="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-4xl">
@@ -541,48 +479,13 @@ const DataMatching = () => {
                 </div>
               </div>
             ) : (
-              <div className="mt-10">
-                <div
-                  ref={imageContainerRef}
-                  className="mx-auto"
-                  style={{
-                    position: "relative",
-                    border: "2px solid gray",
-                    width: "50rem",
-                    height: "30rem",
-                    overflow: "auto",
-                  }}
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${imageUrl}`}
-                    alt="Selected"
-                    ref={imageRef}
-                    style={{
-                      width: "50rem",
-                      height: "50rem",
-                    }}
-                    draggable={false}
-                  />
-
-                  {!selectedCoordintes &&
-                    templateHeaders?.templetedata?.map((data, index) => (
-                      <>
-                        <div
-                          key={index}
-                          style={{
-                            border: "2px solid #007bff",
-                            position: "absolute",
-                            left: `${data.coordinateX}px`,
-                            top: `${data.coordinateY}px`,
-                            width: `${data.width}px`,
-                            height: `${data.height}px`,
-                          }}
-                        ></div>
-                      </>
-                    ))}
-                </div>
-                <div className="flex float-right gap-4 py-6 lg:py-24 px-16 lg:px-24">
-                  <Button onClick={onCsvUpdateHandler} variant="contained"  color="info">
+              <div className="flex-col">
+                <div className="flex mt-2 gap-4 float-right mr-4">
+                  <Button
+                    onClick={onCsvUpdateHandler}
+                    variant="contained"
+                    color="info"
+                  >
                     update
                   </Button>
 
@@ -613,6 +516,107 @@ const DataMatching = () => {
                   >
                     Task Completed
                   </Button>
+                </div>
+                <h3 className="text-center pt-12 text-lg font-semibold pb-1">
+                  Image Name : img1
+                </h3>
+                <div
+                  ref={imageContainerRef}
+                  className="mx-auto bg-white"
+                  style={{
+                    position: "relative",
+                    border: "2px solid gray",
+                    width: "50rem",
+                    height: "23rem",
+                    overflow: "auto",
+                  }}
+                >
+                  <img
+                    src={`data:image/jpeg;base64,${imageUrl}`}
+                    alt="Selected"
+                    ref={imageRef}
+                    style={{
+                      width: "48rem",
+                      height: "50rem",
+                    }}
+                    draggable={false}
+                  />
+
+                  {!selectedCoordintes &&
+                    templateHeaders?.templetedata?.map((data, index) => (
+                      <>
+                        <div
+                          key={index}
+                          style={{
+                            border: "2px solid #007bff",
+                            position: "absolute",
+                            left: `${data.coordinateX}px`,
+                            top: `${data.coordinateY}px`,
+                            width: `${data.width}px`,
+                            height: `${data.height}px`,
+                          }}
+                        ></div>
+                      </>
+                    ))}
+                </div>
+                <div className=" py-3 px-3 w-full xl:w-2/3  mx-auto" >
+                    <div className="">
+                      <label
+                        className="text-xl font-semibold py-2 mt-1 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        htmlFor="questions"
+                      >
+                        Questions:
+                      </label>
+                    </div>
+                  <div className="flex overflow-auto h-[360px]">
+                    <div className="flex flex-wrap">
+                      {csvCurrentData &&
+                        Object.entries(csvCurrentData).map(
+                          ([key, value], i) => {
+                            const csvHeader = csvData[0][key];
+                            const templateData =
+                              templateHeaders?.templetedata.find(
+                                (data) => data.attribute === csvHeader
+                              );
+                            if (
+                              templateData &&
+                              templateData.fieldType === "questionsField" &&
+                              key !== imageColName
+                            ) {
+                              return (
+                                <div
+                                  key={i}
+                                  className="gap-1 mx-2 my-1 flex"
+                                >
+                                  <label
+                                    htmlFor={`Quantity${i}`}
+                                    className="font-bold text-sm w-9 text-bold my-1"
+                                  >
+                                    {key}
+                                  </label>
+                                  <div className="flex rounded">
+                                    <input
+                                      type="text"
+                                      id={`Quantity${i}`}
+                                      className="h-7 w-7 border-transparent text-center rounded text-sm"
+                                      placeholder={value}
+                                      value={csvCurrentData[key]}
+                                      onChange={(e) =>
+                                        changeCurrentCsvDataHandler(
+                                          key,
+                                          e.target.value
+                                        )
+                                      }
+                                      onFocus={() => imageFocusHandler(key)}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            }
+                          }
+                        )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
