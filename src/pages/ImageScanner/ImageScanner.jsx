@@ -255,7 +255,7 @@ const ImageScanner = () => {
                       src={image}
                       alt="Selected"
                       style={{
-                        width: "50rem",
+                        width: "48rem",
                         height: "50rem",
                         cursor: "crosshair",
                       }}

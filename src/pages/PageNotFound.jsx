@@ -27,14 +27,14 @@ export function PageNotFound(props) {
           Sorry, we couldn&apos;t find the page you&apos;re looking for.
         </p>
         <div className="mt-4 flex items-center justify-center gap-x-3">
-          <button
+          {/* <button
             type="button"
             onClick={handleBackButton}
             className="inline-flex items-center rounded-md bg-indigo-600  px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
           >
             <FaArrowLeft size={16} className="mr-2" />
             Go to HomePage
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
