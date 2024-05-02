@@ -10,7 +10,7 @@ import {
 import Button from "@mui/material/Button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import { REACT_APP_IP } from "../../services/common";
 
 const DataMatching = () => {
@@ -278,6 +278,8 @@ const DataMatching = () => {
       setPopUp(true);
     } catch (error) {}
   };
+
+  console.log(currImageName);
 
   return (
     <>
@@ -582,7 +584,11 @@ const DataMatching = () => {
                     ))}
                 </div>
                 <div className="flex float-right gap-4 py-6 lg:py-24 px-16 lg:px-24">
-                  <Button onClick={onCsvUpdateHandler} variant="contained"  color="info">
+                  <Button
+                    onClick={onCsvUpdateHandler}
+                    variant="contained"
+                    color="info"
+                  >
                     update
                   </Button>
 
