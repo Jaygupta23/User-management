@@ -300,7 +300,6 @@ export default function Navbar() {
                       : isUserMenuOpen && (
                           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 user-menu">
                             <div className="py-1">
-                            
                               {userMenuItems
                                 .filter(
                                   (item) =>

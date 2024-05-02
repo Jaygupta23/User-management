@@ -123,7 +123,7 @@ const CsvUploader = () => {
         localStorage.setItem("fileId", JSON.stringify(fileId));
       } catch (error) {
         console.error("Error uploading files: ", error);
-        toast.error(error.message);
+        toast.error("Something went wrong please refresh the page.");
       }
     }
   };
