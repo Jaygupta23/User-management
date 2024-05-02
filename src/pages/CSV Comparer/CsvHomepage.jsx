@@ -79,7 +79,6 @@ const CsvHomepage = () => {
             },
           }
         );
-        console.log(response.data.csvFile);
         dataCtx.setCsvFile(response.data.csvFile);
         const modifiedRes = response.data.data.map((item) => {
           return { ...item, corrected: "" };
