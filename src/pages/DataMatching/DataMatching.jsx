@@ -7,17 +7,22 @@ import {
   onGetTemplateHandler,
   onGetVerifiedUserHandler,
 } from "../../services/common";
+import Button from "@mui/material/Button";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import CheckIcon from '@mui/icons-material/Check';
 import { REACT_APP_IP } from "../../services/common";
 
 const DataMatching = () => {
   const [popUp, setPopUp] = useState(true);
-  const [image, setImage] = useState();
+  const [imageUrl, setImageUrl] = useState();
   const [templateHeaders, setTemplateHeaders] = useState();
   const [csvCurrentData, setCsvCurrentData] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
-  const [imageName, setImageName] = useState("");
+  const [imageColName, setImageColName] = useState("");
   const [currentTaskData, setCurrentTaskData] = useState({});
   const [selectedCoordintes, setSelectedCoordinates] = useState(false);
+  const [currImageName, setCurrImageName] = useState("");
   const [imageNotFound, setImageNotFound] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(1);
   const [csvData, setCsvData] = useState([]);
@@ -53,11 +58,10 @@ const DataMatching = () => {
 
   useEffect(() => {
     const fetchTemplate = async () => {
-      console.log(currentTaskData);
       try {
         const response = await onGetTemplateHandler();
         const templateData = response.find(
-          (data) => data.id === +currentTaskData.templeteId
+          (data) => data.id === parseInt(currentTaskData.templeteId)
         );
         setTemplateHeaders(templateData);
       } catch (error) {
@@ -68,17 +72,17 @@ const DataMatching = () => {
   }, [currentTaskData]);
 
   const onImageHandler = async (direction, csvData, taskData) => {
-    console.log(taskData);
     const headers = csvData[0];
     const getKeyByValue = (object, value) => {
       return Object.keys(object).find((key) => object[key] === value);
     };
 
     const keyForImage = getKeyByValue(headers, "Image");
-    setImageName(keyForImage);
+    setImageColName(keyForImage);
     try {
       let imageName1;
       let newIndex = Number(taskData.currentIndex) - Number(taskData.min) + 1;
+      // let newIndex = currentIndex;
 
       if (direction === "initial") {
         const objects = csvData[newIndex];
@@ -102,8 +106,6 @@ const DataMatching = () => {
         }
       }
 
-      // console.log(newIndex + Number(currentData.min));
-      console.log(currentTaskData);
       const response = await axios.post(
         `http://${REACT_APP_IP}:4000/get/image`,
         {
@@ -118,21 +120,26 @@ const DataMatching = () => {
         }
       );
       const url = response.data?.base64Image;
+      const pathParts = imageName1?.split("/");
+      setCurrImageName(pathParts[pathParts.length - 1]);
       setCurrentTaskData((prevData) => {
         if (direction === "next") {
           return {
             ...prevData,
-            currentIndex: Number(+prevData.currentIndex + 1),
+            currentIndex: parseInt(prevData.currentIndex) + 1,
           };
         } else if (direction === "prev") {
           return {
             ...prevData,
-            currentIndex: Number(+prevData.currentIndex - 1),
+            currentIndex: parseInt(prevData.currentIndex) - 1,
           };
+        } else {
+          console.error("Invalid direction:", direction);
+          return prevData;
         }
       });
 
-      setImage(url);
+      setImageUrl(url);
       setImageNotFound(true);
       setPopUp(false);
     } catch (error) {
@@ -160,7 +167,6 @@ const DataMatching = () => {
           },
         }
       );
-      console.log(currentIndex + Number(currentTaskData.min));
       setCsvData((prevCsvData) => {
         const newCsvData = [...prevCsvData];
         newCsvData[currentIndex] = csvCurrentData;
@@ -189,7 +195,7 @@ const DataMatching = () => {
       return;
     }
 
-    if (!image || !imageContainerRef || !imageRef) {
+    if (!imageUrl || !imageContainerRef || !imageRef) {
       setPopUp(true);
     }
 
@@ -426,7 +432,7 @@ const DataMatching = () => {
                         data.attribute === value &&
                         data.fieldType === "formField"
                     );
-                    if (key !== imageName && templateData) {
+                    if (key !== imageColName && templateData) {
                       return (
                         <div
                           key={i}
@@ -476,7 +482,7 @@ const DataMatching = () => {
                             if (
                               templateData &&
                               templateData.fieldType === "questionsField" &&
-                              key !== imageName
+                              key !== imageColName
                             ) {
                               return (
                                 <div
@@ -520,7 +526,7 @@ const DataMatching = () => {
           </div>
           {/* RIGHT SECTION */}
           <div className="w-full lg:w-9/12 order-1 pt-32 order-lg-2 bg-gradient-to-r from-[rgb(255,195,36)] to-orange-300 matchingMain">
-            {!image ? (
+            {!imageUrl ? (
               <div className="flex justify-center items-center ">
                 <div className="mt-64">
                   <ImageNotFound />
@@ -548,7 +554,7 @@ const DataMatching = () => {
                   }}
                 >
                   <img
-                    src={`data:image/jpeg;base64,${image}`}
+                    src={`data:image/jpeg;base64,${imageUrl}`}
                     alt="Selected"
                     ref={imageRef}
                     style={{
@@ -576,35 +582,37 @@ const DataMatching = () => {
                     ))}
                 </div>
                 <div className="flex float-right gap-4 py-6 lg:py-24 px-16 lg:px-24">
-                  <button
-                    onClick={onCsvUpdateHandler}
-                    className="block w-full rounded  px-3 py-2 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-md sm:w-auto"
-                  >
-                    Update
-                  </button>
+                  <Button onClick={onCsvUpdateHandler} variant="contained"  color="info">
+                    update
+                  </Button>
 
-                  <button
+                  <Button
                     onClick={() =>
                       onImageHandler("prev", csvData, currentTaskData)
                     }
-                    className="block w-full rounded  px-4 py-3 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-md sm:w-auto"
+                    variant="contained"
+                    endIcon={<ArrowBackIosIcon />}
                   >
                     Prev
-                  </button>
-                  <button
+                  </Button>
+
+                  <Button
                     onClick={() =>
                       onImageHandler("next", csvData, currentTaskData)
                     }
-                    className="block w-full rounded  px-4 py-3 border-[red]  border-2 hover:bg-red-500 hover:text-white  font-bold text-md sm:w-auto"
+                    variant="contained"
+                    endIcon={<ArrowForwardIosIcon />}
                   >
                     Next
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={taskUpdationHandler}
-                    className="block w-full rounded  px-4 py-3 border-[green]  border-2 hover:bg-green-700 hover:text-white  font-bold text-md sm:w-auto"
+                    variant="contained"
+                    color="success"
+                    endIcon={<CheckIcon />}
                   >
                     Task Completed
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
