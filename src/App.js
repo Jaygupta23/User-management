@@ -19,6 +19,7 @@ import DataMatching from "./pages/DataMatching/DataMatching";
 import { onGetVerifiedUserHandler } from "./services/common";
 import Navbar from "./components/Navbar/Navbar";
 import Profile from "./pages/Auth/Profile";
+import Testing from "./pages/Testing";
 
 function App() {
   const datactx = useContext(dataContext);
@@ -90,6 +91,7 @@ function App() {
               permissions.dataEntry && (
                 <>
                   <Route path="/datamatching" element={<DataMatching />} />
+                  <Route path="/testing" element={<Testing/>} />
                   <Route path="/profile" element={<Profile />} />
                 </>
               )}

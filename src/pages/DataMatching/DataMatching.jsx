@@ -6,12 +6,12 @@ import {
   onGetTaskHandler,
   onGetTemplateHandler,
   onGetVerifiedUserHandler,
+  REACT_APP_IP,
 } from "../../services/common";
 import Button from "@mui/material/Button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CheckIcon from "@mui/icons-material/Check";
-import { REACT_APP_IP } from "../../services/common";
 
 const DataMatching = () => {
   const [popUp, setPopUp] = useState(true);
@@ -29,6 +29,8 @@ const DataMatching = () => {
   const imageContainerRef = useRef(null);
   const imageRef = useRef(null);
   const token = JSON.parse(localStorage.getItem("userData"));
+
+  console.log(csvData)
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -70,6 +72,56 @@ const DataMatching = () => {
     };
     fetchTemplate();
   }, [currentTaskData]);
+
+  const onCsvUpdateHandler = async () => {
+    try {
+      await axios.post(
+        `http://${REACT_APP_IP}:4000/updatecsvdata/${parseInt(
+          currentTaskData?.fileId
+        )}`,
+        {
+          data: csvCurrentData,
+          index: currentIndex + Number(currentTaskData.min),
+        },
+        {
+          headers: {
+            token: token,
+          },
+        }
+      );
+
+      setCsvData((prevCsvData) => {
+        const newCsvData = [...prevCsvData];
+        newCsvData[currentIndex] = csvCurrentData;
+        return newCsvData;
+      });
+
+      toast.success("Data update successfully.");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft") {
+        onImageHandler("prev", csvData, currentTaskData);
+      } else if (event.key === "ArrowRight") {
+        onImageHandler("next", csvData, currentTaskData);
+      } else if (event.altKey && event.key === "s") {
+        setCsvCurrentData((prevData) => ({
+          ...prevData,
+          // Update csvCurrentData with the latest changes, if any
+          // For example, if there are unsaved changes in an input field, you need to update csvCurrentData with those changes
+        }));
+        onCsvUpdateHandler();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [csvData, currentTaskData, setCsvCurrentData, onCsvUpdateHandler]);
 
   const onImageHandler = async (direction, csvData, taskData) => {
     const headers = csvData[0];
@@ -148,37 +200,6 @@ const DataMatching = () => {
     }
   };
 
-  const onCsvUpdateHandler = async () => {
-    // const updatedData = [...csvData];
-    // updatedData[currentIndex] = csvCurrentData;
-    // setCsvData(updatedData);
-    try {
-      await axios.post(
-        `http://${REACT_APP_IP}:4000/updatecsvdata/${parseInt(
-          currentTaskData?.fileId
-        )}`,
-        {
-          data: csvCurrentData,
-          index: currentIndex + Number(currentTaskData.min),
-        },
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
-      setCsvData((prevCsvData) => {
-        const newCsvData = [...prevCsvData];
-        newCsvData[currentIndex] = csvCurrentData;
-        return newCsvData;
-      });
-
-      toast.success("Data update successfully.");
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
   const changeCurrentCsvDataHandler = (key, value) => {
     if (!imageNotFound) {
       return;
@@ -188,7 +209,42 @@ const DataMatching = () => {
       ...prevData,
       [key]: value,
     }));
+
+    console.log(csvCurrentData);
   };
+
+  //   const onCsvUpdateHandler = async () => {
+  //     // const updatedData = [...csvData];
+  //     // updatedData[currentIndex] = csvCurrentData;
+  //     // setCsvData(updatedData);
+  //     // console.log(csvCurrentData);
+  //     try {
+  //       await axios.post(
+  //         `http://${REACT_APP_IP}:4000/updatecsvdata/${parseInt(
+  //           currentTaskData?.fileId
+  //         )}`,
+  //         {
+  //           data: csvCurrentData,
+  //           index: currentIndex + Number(currentTaskData.min),
+  //         },
+  //         {
+  //           headers: {
+  //             token: token,
+  //           },
+  //         }
+  //       );
+
+  //       setCsvData((prevCsvData) => {
+  //         const newCsvData = [...prevCsvData];
+  //         newCsvData[currentIndex] = csvCurrentData;
+  //         return newCsvData;
+  //       });
+
+  //       toast.success("Data update successfully.");
+  //     } catch (error) {
+  //       toast.error(error.message);
+  //     }
+  //   };
 
   const imageFocusHandler = (headerName) => {
     if (!imageNotFound) {
@@ -278,8 +334,6 @@ const DataMatching = () => {
       setPopUp(true);
     } catch (error) {}
   };
-
-  console.log(currImageName);
 
   return (
     <>
@@ -481,47 +535,8 @@ const DataMatching = () => {
                 </div>
               </div>
             ) : (
-              <div className="mt-10">
-                <div
-                  ref={imageContainerRef}
-                  className="mx-auto"
-                  style={{
-                    position: "relative",
-                    border: "2px solid gray",
-                    width: "50rem",
-                    height: "30rem",
-                    overflow: "auto",
-                  }}
-                >
-                  <img
-                    src={`data:image/jpeg;base64,${imageUrl}`}
-                    alt="Selected"
-                    ref={imageRef}
-                    style={{
-                      width: "50rem",
-                      height: "50rem",
-                    }}
-                    draggable={false}
-                  />
-
-                  {!selectedCoordintes &&
-                    templateHeaders?.templetedata?.map((data, index) => (
-                      <>
-                        <div
-                          key={index}
-                          style={{
-                            border: "2px solid #007bff",
-                            position: "absolute",
-                            left: `${data.coordinateX}px`,
-                            top: `${data.coordinateY}px`,
-                            width: `${data.width}px`,
-                            height: `${data.height}px`,
-                          }}
-                        ></div>
-                      </>
-                    ))}
-                </div>
-                <div className="flex float-right gap-4 py-6 lg:py-24 px-16 lg:px-24">
+              <div className="flex-col">
+                <div className="flex float-right gap-4 mt-2 mr-4 ">
                   <Button
                     onClick={onCsvUpdateHandler}
                     variant="contained"
@@ -559,7 +574,7 @@ const DataMatching = () => {
                   </Button>
                 </div>
                 <h3 className="text-center pt-12 text-lg font-semibold pb-1">
-                  Image Name : img1
+                  Image Name : {currImageName}
                 </h3>
                 <div
                   ref={imageContainerRef}
@@ -578,7 +593,6 @@ const DataMatching = () => {
                     ref={imageRef}
                     style={{
                       width: "48rem",
-                      height: "50rem",
                     }}
                     draggable={false}
                   />

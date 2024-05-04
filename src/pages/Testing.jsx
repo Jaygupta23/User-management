@@ -2,9 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { onGetTemplateHandler, REACT_APP_IP } from "../../services/common";
+import { onGetTemplateHandler, REACT_APP_IP } from "../services/common";
 
-const TemplateMapping = () => {
+const Testing = () => {
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [templateHeaders, setTemplateHeaders] = useState();
   const [selectedAssociations, setSelectedAssociations] = useState({});
@@ -64,12 +64,10 @@ const TemplateMapping = () => {
   const handleTemplateHeaderChange = (csvHeader, templateHeader) => {
     const updatedAssociations = { ...selectedAssociations };
 
-    if (templateHeader.includes("--")) {
-      const [min, max] = templateHeader.split("--");
+    if (templateHeader.includes("-")) {
+      const [min, max] = templateHeader.split("-");
       const newMin = parseInt(min);
       const newMax = parseInt(max);
-
-      console.log(min, max);
 
       // Loop through all headers
       Object.keys(selectedAssociations).forEach((header) => {
@@ -264,4 +262,4 @@ const TemplateMapping = () => {
     </div>
   );
 };
-export default TemplateMapping;
+export default Testing;
