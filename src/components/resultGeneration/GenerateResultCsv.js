@@ -83,7 +83,7 @@ const GenerateResultCsv = (props) => {
               if (i == 1 && subjectHEaderPushCount == 1) {
                 headers.push(
                   `${subjectWiseMarking[k].subject}_notAttempted`,
-                  `${subjectWiseMarking[k].subject}_Attempted`,
+                  `${subjectWiseMarking[k].subject}_Correct`,
                   `${subjectWiseMarking[k].subject}_wrongAnswer`,
                   `${subjectWiseMarking[k].subject}_total`
                 );
@@ -125,7 +125,7 @@ const GenerateResultCsv = (props) => {
               studentData = {
                 ...studentData,
                 [`${subjectWiseMarking[k].subject}_notAttempted`]: NotAttempted,
-                [`${subjectWiseMarking[k].subject}_Attempted`]: CorrectAnswer,
+                [`${subjectWiseMarking[k].subject}_Correct`]: CorrectAnswer,
                 [`${subjectWiseMarking[k].subject}_wrongAnswer`]: WrongAnswer,
                 [`${subjectWiseMarking[k].subject}_total`]: subjectTotal,
                 total: allSubjectTotal,
