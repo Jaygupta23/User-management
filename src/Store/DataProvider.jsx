@@ -3,7 +3,7 @@ import DataContext from "./DataContext";
 
 const initialData = {
   csvHeader: [],
-  isLogin: localStorage.getItem("userData") ? true : false,
+  isLogin: localStorage.getItem("userData") ? true  : false,
   primaryKey: "",
   skippingKey: [],
   firstInputFileName: "",
@@ -18,6 +18,8 @@ const initialData = {
   isLoading: false,
   csvDataWithImage: [],
   userData: {},
+  loginData: {},
+  token: {}
 };
 
 const DataProvider = (props) => {
@@ -31,6 +33,7 @@ const DataProvider = (props) => {
       };
     });
   };
+ 
   const addToPrimaryKeyHandler = (key) => {
     setDataState((item) => {
       return {
@@ -135,6 +138,14 @@ const DataProvider = (props) => {
       };
     });
   };
+  const modifyLoginDataHandler = (state) => {
+    setDataState((item) => {
+      return {
+        ...item,
+        loginData: state,
+      };
+    });
+  }
   const modifyIsLoadingHandler = (state) => {
     setDataState((item) => {
       return {
@@ -148,6 +159,14 @@ const DataProvider = (props) => {
       return {
         ...item,
         userData: state,
+      };
+    });
+  };
+  const modifyTokenHandler = (state) => {
+    setDataState((item) => {
+      return {
+        ...item,
+        token : state,
       };
     });
   };
@@ -169,7 +188,11 @@ const DataProvider = (props) => {
     csvDataWithImage: dataState.csvDataWithImage,
     isLoading: dataState.isLoading,
     userData: dataState.userData,
+    loginData: dataState.loginData,
+    token: dataState.token,
 
+    modifyLoginData: modifyLoginDataHandler,
+    modifyToken: modifyTokenHandler,
     modifyAuth: modifyAuthHandler,
     modifyIsLoading: modifyIsLoadingHandler,
     modifyIslogin: modifyIsloginHandler,

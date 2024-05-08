@@ -1,10 +1,13 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import dataContext from "../Store/DataContext";
+import { useContext } from "react";
 
 export const REACT_APP_IP = "192.168.0.189";
 // export const REACT_APP_IP = "192.168.0.116";
 
 const token = JSON.parse(localStorage.getItem("userData"));
+
 
 export const onGetTemplateHandler = async () => {
   try {
@@ -41,6 +44,7 @@ export const onGetAllUsersHandler = async () => {
 };
 
 export const onGetVerifiedUserHandler = async () => {
+  console.log(token)
   try {
     const response = await axios.post(
       `http://${REACT_APP_IP}:4000/users/getuser`,
@@ -51,9 +55,10 @@ export const onGetVerifiedUserHandler = async () => {
         },
       }
     );
-
     return response.data;
-  } catch (error) {}
+  } catch (error) { 
+    console.log(error)
+  }  
 };
 
 export const onGetAllTasksHandler = async () => {
