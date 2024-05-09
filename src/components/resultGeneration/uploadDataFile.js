@@ -12,6 +12,7 @@ import PaperQueMapper from "./PaperQueMapper";
 import { toast } from "react-toastify";
 import ResultGenerationContext from "../../Store/ResultGenerationContext";
 import { REACT_APP_IP } from "../../services/common";
+import FindError from "./FindError";
 const UploadDataFile = () => {
   const ctx = useContext(ResultGenerationContext);
   const token = JSON.parse(localStorage.getItem("userData"));
@@ -37,6 +38,7 @@ const UploadDataFile = () => {
         ctx.uploadFilesHandler(e.target.files[0].name);
 
         ctx.uploadDataHeaders(res.data.data);
+        console.log(res.data.data);
       })
       .catch((err) =>
         toast.error(
@@ -134,6 +136,7 @@ const UploadDataFile = () => {
               {dataHeaders && keyHEaders && (
                 <SubjectWiseMarkApply></SubjectWiseMarkApply>
               )}
+              {dataHeaders && keyHEaders && <FindError></FindError>}
             </div>
           )}
         </div>

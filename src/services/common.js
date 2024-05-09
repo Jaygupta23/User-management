@@ -5,6 +5,7 @@ import { useContext } from "react";
 
 export const REACT_APP_IP = "192.168.0.189";
 // export const REACT_APP_IP = "192.168.0.116";
+// export const REACT_APP_IP = "localhost";
 
 const token = JSON.parse(localStorage.getItem("userData"));
 

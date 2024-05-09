@@ -44,6 +44,14 @@ function App() {
     <Router>
       {datactx.isLogin && <Navbar />}
       <Routes>
+        <Route
+          path="/resultGeneration"
+          element={
+            <ResultGenerationProvider>
+              <HomePageTest />
+            </ResultGenerationProvider>
+          }
+        />
         {datactx.isLogin && (
           <>
             {/* <Route path="/home" element={""} /> */}
@@ -91,7 +99,7 @@ function App() {
               permissions.dataEntry && (
                 <>
                   <Route path="/datamatching" element={<DataMatching />} />
-                  <Route path="/testing" element={<Testing/>} />
+                  <Route path="/testing" element={<Testing />} />
                   <Route path="/profile" element={<Profile />} />
                 </>
               )}
