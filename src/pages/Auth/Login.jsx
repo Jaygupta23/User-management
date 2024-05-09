@@ -13,6 +13,7 @@ export default function Login() {
     password: "",
   });
   const dataCtx = useContext(dataContext);
+  // console.log(dataCtx,"------logon")
 
   const handleInput = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));

@@ -36,55 +36,15 @@ const menuItems = [
     href: "resultGeneration",
   },
 ];
-
 export default function Navbar() {
+  const datactx = useContext(dataContext);
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const mainUrl = location.pathname?.slice(1)?.split("/");
   // const userData = JSON.parse(localStorage.getItem("userData"));
-  const [userData, setUserData] = useState({});
-  const datactx = useContext(dataContext);
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await onGetVerifiedUserHandler();
-        setUserData(response.user);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUser();
-    console.log(userData);
-  }, []);
-  useEffect(() => {
-    if (userData && Object.keys(userData).length !== 0) {
-      if (userData.role === "Admin") {
-        const currentPath =
-          localStorage.getItem("currentPath") === "/"
-            ? "imageuploader"
-            : localStorage.getItem("currentPath");
-        navigate(currentPath);
-      } else {
-        const firstAllowedLink = menuItems.find(
-          (item) => userData.permissions[item.permission]
-        );
-        if (firstAllowedLink) {
-          const currentPath =
-            localStorage.getItem("currentPath") === "/"
-              ? firstAllowedLink.href
-              : localStorage.getItem("currentPath");
-          navigate(currentPath);
-        }
-      }
-    }
-  }, [userData]);
-
-  useEffect(() => {
-    localStorage.setItem("currentPath", location.pathname);
-  }, [location.pathname]);
-
+  const [userData, setUserData] = useState(datactx.loginData);
   const userMenuItems = [
     {
       name: "Profile",
@@ -115,19 +75,57 @@ export default function Navbar() {
         datactx.modifyIslogin(false);
         navigate("/");
         setIsUserMenuOpen(false);
+        setIsMenuOpen(false);
+        console.log(datactx,"--data")
       },
     },
   ];
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        // const response = await onGetVerifiedUserHandler(datactx.token);
+        const response = await onGetVerifiedUserHandler();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+        setUserData(response.user);
+        // datactx.modifyIslogin(true)
+        // setUserData(datactx.loginData)
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const toggleUserMenu = (event) => {
-    event.stopPropagation();
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
+if(datactx.token || JSON.parse(localStorage.getItem("userData"))){
+  getUser();
+}
 
+  }, [datactx.token]);
+  useEffect(() => {
+    if (userData && Object.keys(userData).length !== 0) {
+      if (userData.role === "Admin") {
+        const currentPath =
+        localStorage.getItem("currentPath") === "/"
+        ? "imageuploader"
+        : localStorage.getItem("currentPath");
+        navigate(currentPath);
+      } else {
+        const firstAllowedLink = menuItems.find(
+          (item) => userData.permissions[item.permission]
+        );
+        if (firstAllowedLink) {
+          const currentPath =
+          localStorage.getItem("currentPath") === "/"
+          ? firstAllowedLink.href
+          : localStorage.getItem("currentPath");
+          navigate(currentPath);
+        }
+      }
+    }
+  }, [userData,datactx.isLogin]);
+  
+  useEffect(() => {
+    localStorage.setItem("currentPath", location.pathname);
+  }, [location.pathname]);
+  
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (isUserMenuOpen && event.target.closest(".user-menu") === null) {
@@ -142,6 +140,18 @@ export default function Navbar() {
       document.removeEventListener("click", handleOutsideClick);
     };
   }, [isUserMenuOpen]);
+
+
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleUserMenu = (event) => {
+    event.stopPropagation();
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
 
   const filteredMenuItems =
     userData &&

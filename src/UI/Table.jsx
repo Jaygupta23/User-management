@@ -293,6 +293,7 @@ const TableCol = (props) => {
                   color="success"
                   onClick={saveHandler}
                   id="saveBtn"
+                  id="saveBtn"
                 >
                   SAVE
                 </Button>

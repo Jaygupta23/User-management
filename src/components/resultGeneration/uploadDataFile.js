@@ -12,8 +12,8 @@ import PaperQueMapper from "./PaperQueMapper";
 import { toast } from "react-toastify";
 import ResultGenerationContext from "../../Store/ResultGenerationContext";
 import { REACT_APP_IP } from "../../services/common";
+import FindError from "./FindError";
 const UploadDataFile = () => {
-  
   const ctx = useContext(ResultGenerationContext);
   const token = JSON.parse(localStorage.getItem("userData"));
 
@@ -38,6 +38,7 @@ const UploadDataFile = () => {
         ctx.uploadFilesHandler(e.target.files[0].name);
 
         ctx.uploadDataHeaders(res.data.data);
+        console.log(res.data.data);
       })
       .catch((err) =>
         toast.error(
@@ -70,10 +71,11 @@ const UploadDataFile = () => {
       );
   };
   return (
-    <div className="h-[100vh] w-[100%] flex  pt-20 overflow-y-hidden lg:mx-4 xl:mx-20">
+    <div className="h-[100vh] w-[100%] flex  overflow-y-hidden lg:mx-4 xl:mx-20">
+      {/* <div className="h-20"></div> */}
       {uploadFiles.length > 0 && (
         <div
-          className="h-auto flex flex-col min-w-[200px]  md:min-w-[300px] w-[20vw]  overflow-y-scroll border-e-2 border-gray-400"
+          className="h-auto flex flex-col min-w-[200px]  md:min-w-[300px] w-[20vw] pt-20  overflow-y-scroll border-e-2 border-gray-400"
           style={{ scrollbarWidth: "none" }}
         >
           <UploadStatus />
@@ -129,11 +131,12 @@ const UploadDataFile = () => {
           )}
           {/* marks apply  */}
           {dataHeaders && keyHEaders && (
-            <div className="w-[100%] ">
+            <div className="w-[100%] pt-20 ">
               {dataHeaders && keyHEaders && <MarksApply></MarksApply>}
               {dataHeaders && keyHEaders && (
                 <SubjectWiseMarkApply></SubjectWiseMarkApply>
               )}
+              {dataHeaders && keyHEaders && <FindError></FindError>}
             </div>
           )}
         </div>

@@ -22,7 +22,7 @@ const TemplateMapping = () => {
   const dataCtx = useContext(dataContext);
   const { id } = useParams();
   const navigate = useNavigate();
-  const { fileId } = JSON.parse(localStorage.getItem("fileId"));
+  const { fileId } = JSON.parse(localStorage.getItem("fileId")) || "";
   const token = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {

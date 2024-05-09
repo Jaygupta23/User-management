@@ -75,8 +75,10 @@ const Correction = () => {
       return confirmationMessage;
     };
 
+
     // Add event listener when the component mounts
     window.addEventListener("beforeunload", confirmExit);
+
 
     // Remove event listener when the component unmounts
     return () => {
@@ -84,9 +86,11 @@ const Correction = () => {
     };
   }, []); // Empty dependency array to run effect only once on mount
 
+
   useEffect(() => {
     const handlePopstate = (e) => {
       // Display a confirmation message
+      window.confirm();
       window.confirm();
       const confirmationMessage = "Are you sure you want to leave this page?";
       if (!window.confirm(confirmationMessage)) {
@@ -95,14 +99,18 @@ const Correction = () => {
       }
     };
 
+
     // Add event listener when the component mounts
     window.addEventListener("popstate", handlePopstate);
+
 
     // Remove event listener when the component unmounts
     return () => {
       window.removeEventListener("popstate", handlePopstate);
     };
   }, [location]); // Empty dependency array to run effect only once on mount
+  // Empty dependency array to run effect only once on mount
+
   // Empty dependency array to run effect only once on mount
 
   useEffect(() => {

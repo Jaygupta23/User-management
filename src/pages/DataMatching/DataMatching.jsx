@@ -7,6 +7,7 @@ import {
   onGetTemplateHandler,
   onGetVerifiedUserHandler,
   REACT_APP_IP,
+  REACT_APP_IP,
 } from "../../services/common";
 import Button from "@mui/material/Button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -18,12 +19,15 @@ import AdminAssined from "./AdminAssined";
 const DataMatching = () => {
   const [popUp, setPopUp] = useState(true);
   const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState();
   const [templateHeaders, setTemplateHeaders] = useState();
   const [csvCurrentData, setCsvCurrentData] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
   const [imageColName, setImageColName] = useState("");
+  const [imageColName, setImageColName] = useState("");
   const [currentTaskData, setCurrentTaskData] = useState({});
   const [selectedCoordintes, setSelectedCoordinates] = useState(false);
+  const [currImageName, setCurrImageName] = useState("");
   const [currImageName, setCurrImageName] = useState("");
   const [imageNotFound, setImageNotFound] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -82,6 +86,7 @@ const DataMatching = () => {
       }
     };
     fetchCurrentUser();
+  }, [popUp]);
   }, [popUp]);
 
   useEffect(() => {
@@ -155,6 +160,7 @@ const DataMatching = () => {
 
     const keyForImage = getKeyByValue(headers, "Image");
     setImageColName(keyForImage);
+    setImageColName(keyForImage);
     try {
       let imageName1;
       let newIndex = Number(taskData.currentIndex) - Number(taskData.min) + 1;
@@ -164,6 +170,7 @@ const DataMatching = () => {
         const objects = csvData[newIndex];
         imageName1 = objects[keyForImage];
         setCsvCurrentData(objects);
+        // newIndex = newIndex + 1;
         // newIndex = newIndex + 1;
       } else {
         newIndex = direction === "next" ? newIndex + 1 : newIndex - 1;
@@ -190,12 +197,37 @@ const DataMatching = () => {
           id: taskData.id,
         },
         {
+          imageName: imageName1,
+          currentIndex: newIndex + Number(taskData.min) - 1,
+          id: taskData.id,
+        },
+        {
           headers: {
             token: token,
           },
         }
       );
       const url = response.data?.base64Image;
+      const pathParts = imageName1?.split("/");
+      setCurrImageName(pathParts[pathParts.length - 1]);
+      setCurrentTaskData((prevData) => {
+        if (direction === "next") {
+          return {
+            ...prevData,
+            currentIndex: parseInt(prevData.currentIndex) + 1,
+          };
+        } else if (direction === "prev") {
+          return {
+            ...prevData,
+            currentIndex: parseInt(prevData.currentIndex) - 1,
+          };
+        } else {
+          console.error("Invalid direction:", direction);
+          return prevData;
+        }
+      });
+
+      setImageUrl(url);
       const pathParts = imageName1?.split("/");
       setCurrImageName(pathParts[pathParts.length - 1]);
       setCurrentTaskData((prevData) => {
@@ -270,11 +302,48 @@ const DataMatching = () => {
   //     }
   //   };
 
+    console.log(csvCurrentData);
+  };
+
+  //   const onCsvUpdateHandler = async () => {
+  //     // const updatedData = [...csvData];
+  //     // updatedData[currentIndex] = csvCurrentData;
+  //     // setCsvData(updatedData);
+  //     // console.log(csvCurrentData);
+  //     try {
+  //       await axios.post(
+  //         `http://${REACT_APP_IP}:4000/updatecsvdata/${parseInt(
+  //           currentTaskData?.fileId
+  //         )}`,
+  //         {
+  //           data: csvCurrentData,
+  //           index: currentIndex + Number(currentTaskData.min),
+  //         },
+  //         {
+  //           headers: {
+  //             token: token,
+  //           },
+  //         }
+  //       );
+
+  //       setCsvData((prevCsvData) => {
+  //         const newCsvData = [...prevCsvData];
+  //         newCsvData[currentIndex] = csvCurrentData;
+  //         return newCsvData;
+  //       });
+
+  //       toast.success("Data update successfully.");
+  //     } catch (error) {
+  //       toast.error(error.message);
+  //     }
+  //   };
+
   const imageFocusHandler = (headerName) => {
     if (!imageNotFound) {
       return;
     }
 
+    if (!imageUrl || !imageContainerRef || !imageRef) {
     if (!imageUrl || !imageContainerRef || !imageRef) {
       setPopUp(true);
     }
@@ -336,6 +405,7 @@ const DataMatching = () => {
         }
       );
       setCsvData(response.data);
+      onImageHandler("initial", response.data, taskData);
       onImageHandler("initial", response.data, taskData);
       setPopUp(false);
     } catch (error) {
