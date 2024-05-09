@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const REACT_APP_IP = "192.168.0.189";
-// export const REACT_APP_IP = "192.168.0.116";
+// export const REACT_APP_IP = "192.168.0.146";
 
 const token = JSON.parse(localStorage.getItem("userData"));
 
@@ -88,4 +88,3 @@ export const onGetTaskHandler = async (id) => {
     toast.error(error.message);
   }
 };
-

@@ -30,8 +30,6 @@ const DataMatching = () => {
   const imageRef = useRef(null);
   const token = JSON.parse(localStorage.getItem("userData"));
 
-  console.log(csvData)
-
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
