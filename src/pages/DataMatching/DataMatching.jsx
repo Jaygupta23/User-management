@@ -30,7 +30,7 @@ const DataMatching = () => {
   const imageRef = useRef(null);
   const token = JSON.parse(localStorage.getItem("userData"));
 
-  console.log(csvData)
+  console.log(csvData);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -135,7 +135,6 @@ const DataMatching = () => {
       let imageName1;
       let newIndex = Number(taskData.currentIndex) - Number(taskData.min) + 1;
       // let newIndex = currentIndex;
-
       if (direction === "initial") {
         const objects = csvData[newIndex];
         imageName1 = objects[keyForImage];
@@ -157,7 +156,6 @@ const DataMatching = () => {
           return;
         }
       }
-
       const response = await axios.post(
         `http://${REACT_APP_IP}:4000/get/image`,
         {
