@@ -32,17 +32,15 @@ const menuItems = [
     href: "resultGeneration",
   },
 ];
-
 export default function Navbar() {
+  const datactx = useContext(dataContext);
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const mainUrl = location.pathname?.slice(1)?.split("/");
   // const userData = JSON.parse(localStorage.getItem("userData"));
-  const [userData, setUserData] = useState({});
-  const datactx = useContext(dataContext);
-  
+  const [userData, setUserData] = useState(datactx.loginData);
   const userMenuItems = [
     {
       name: "Profile",
@@ -74,22 +72,29 @@ export default function Navbar() {
         navigate("/");
         setIsUserMenuOpen(false);
         setIsMenuOpen(false);
+        console.log(datactx,"--data")
       },
     },
   ];
-
   useEffect(() => {
     const getUser = async () => {
       try {
+        // const response = await onGetVerifiedUserHandler(datactx.token);
         const response = await onGetVerifiedUserHandler();
+
         setUserData(response.user);
+        // datactx.modifyIslogin(true)
+        // setUserData(datactx.loginData)
       } catch (error) {
         console.log(error);
       }
     };
-    getUser();
-  }, []);
 
+if(datactx.token || JSON.parse(localStorage.getItem("userData"))){
+  getUser();
+}
+
+  }, [datactx.token]);
   useEffect(() => {
     if (userData && Object.keys(userData).length !== 0) {
       if (userData.role === "Admin") {
@@ -111,7 +116,7 @@ export default function Navbar() {
         }
       }
     }
-  }, [userData]);
+  }, [userData,datactx.isLogin]);
   
   useEffect(() => {
     localStorage.setItem("currentPath", location.pathname);

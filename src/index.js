@@ -8,12 +8,10 @@ import reportWebVitals from "./reportWebVitals";
 import DataProvider from "./Store/DataProvider.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
     <DataProvider>
       <App />
       <ToastContainer />
     </DataProvider>
-  </React.StrictMode>
 );
 
 reportWebVitals();

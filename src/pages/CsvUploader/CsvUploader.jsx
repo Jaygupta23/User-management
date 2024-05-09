@@ -24,7 +24,7 @@ const CsvUploader = () => {
       try {
         const response = await onGetTemplateHandler();
         const csvTemplates = response.filter(
-          (data) => data.TempleteType === "Data Entry"
+          (data) => data.TempleteType !== "Data Entry"
         );
         setAllTemplates(csvTemplates);
       } catch (error) {

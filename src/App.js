@@ -91,7 +91,7 @@ function App() {
               permissions.dataEntry && (
                 <>
                   <Route path="/datamatching" element={<DataMatching />} />
-                  <Route path="/testing" element={<Testing/>} />
+                  <Route path="/testing" element={<Testing />} />
                   <Route path="/profile" element={<Profile />} />
                 </>
               )}

@@ -13,6 +13,7 @@ export default function Login() {
     password: "",
   });
   const dataCtx = useContext(dataContext);
+  // console.log(dataCtx,"------logon")
 
   const handleInput = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -29,7 +30,9 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem("userData", JSON.stringify(response.data.token));
         dataCtx.modifyIslogin(true);
-          window.location.reload(true);
+        dataCtx.modifyLoginData(response.data.userData);
+        dataCtx.modifyToken(response.data.token);
+
         toast.success("Login Successfull");
       } else {
         console.error("Login failed:", response.data.error);
