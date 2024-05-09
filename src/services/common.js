@@ -1,16 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import dataContext from "../Store/DataContext";
-import { useContext } from "react";
 
 export const REACT_APP_IP = "192.168.0.189";
-// export const REACT_APP_IP = "192.168.0.116";
-// export const REACT_APP_IP = "localhost";
-
-const token = JSON.parse(localStorage.getItem("userData"));
+// export const REACT_APP_IP = "192.168.0.146";
 
 export const onGetTemplateHandler = async () => {
-const token = JSON.parse(localStorage.getItem("userData"));
+  const token = JSON.parse(localStorage.getItem("userData"));
 
   try {
     const response = await axios.post(
@@ -29,7 +24,7 @@ const token = JSON.parse(localStorage.getItem("userData"));
 };
 
 export const onGetAllUsersHandler = async () => {
-const token = JSON.parse(localStorage.getItem("userData"));
+  const token = JSON.parse(localStorage.getItem("userData"));
 
   try {
     const response = await axios.post(
@@ -48,9 +43,9 @@ const token = JSON.parse(localStorage.getItem("userData"));
 };
 
 export const onGetVerifiedUserHandler = async () => {
-const token = JSON.parse(localStorage.getItem("userData"));
+  const token = JSON.parse(localStorage.getItem("userData"));
   // console.log(token)
-  if(token){
+  if (token) {
     try {
       const response = await axios.post(
         `http://${REACT_APP_IP}:4000/users/getuser`,
@@ -62,14 +57,14 @@ const token = JSON.parse(localStorage.getItem("userData"));
         }
       );
       return response.data;
-    } catch (error) { 
-      console.log(error)
-    }  
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 
 export const onGetAllTasksHandler = async () => {
-const token = JSON.parse(localStorage.getItem("userData"));
+  const token = JSON.parse(localStorage.getItem("userData"));
   try {
     const response = await axios.get(
       `http://${REACT_APP_IP}:4000/get/alltasks`,
@@ -87,7 +82,7 @@ const token = JSON.parse(localStorage.getItem("userData"));
 };
 
 export const onGetTaskHandler = async (id) => {
-const token = JSON.parse(localStorage.getItem("userData"));
+  const token = JSON.parse(localStorage.getItem("userData"));
 
   try {
     const response = await axios.get(
@@ -103,4 +98,3 @@ const token = JSON.parse(localStorage.getItem("userData"));
     toast.error(error.message);
   }
 };
-

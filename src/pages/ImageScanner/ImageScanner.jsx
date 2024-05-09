@@ -127,10 +127,6 @@ const ImageScanner = () => {
     toast.success("Coordinate successfully added.");
   };
 
-  console.log(questionRange);
-
-  console.log(selectedCoordinates);
-
   const onRemoveSelectedHandler = (id) => {
     const newArray = selectedCoordinates.filter((data) => data.id !== id);
     setSelectedCoordinates(newArray);

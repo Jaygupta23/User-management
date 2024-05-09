@@ -23,7 +23,10 @@ const CsvUploader = () => {
     const fetchTemplate = async () => {
       try {
         const response = await onGetTemplateHandler();
-        setAllTemplates(response);
+        const csvTemplates = response.filter(
+          (data) => data.TempleteType !== "Data Entry"
+        );
+        setAllTemplates(csvTemplates);
       } catch (error) {
         console.log(error);
       }
