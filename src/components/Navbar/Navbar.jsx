@@ -41,7 +41,6 @@ export default function Navbar() {
   const mainUrl = location.pathname?.slice(1)?.split("/");
   // const userData = JSON.parse(localStorage.getItem("userData"));
   const [userData, setUserData] = useState(datactx.loginData);
-  console.log(datactx.token,"context token")
   const userMenuItems = [
     {
       name: "Profile",
@@ -85,17 +84,17 @@ export default function Navbar() {
 
         setUserData(response.user);
         // datactx.modifyIslogin(true)
-        console.log(response)
         // setUserData(datactx.loginData)
       } catch (error) {
         console.log(error);
       }
     };
-    getUser();
 
-    console.log("hello")
+if(datactx.token || JSON.parse(localStorage.getItem("userData"))){
+  getUser();
+}
+
   }, [datactx.token]);
-  console.log(userData,"userdata")
   useEffect(() => {
     if (userData && Object.keys(userData).length !== 0) {
       if (userData.role === "Admin") {
